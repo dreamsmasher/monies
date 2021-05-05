@@ -32,8 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
         visible = !visible;
     };
    
+    userConfig.showOnLoad && moniesStatusItem.show();
+
     let toggleId = 'monies.toggleStatus';
-    moniesStatusItem.show();
+
 
     subscriptions.push(vscode.commands.registerCommand(toggleId, toggleFunc));
     moniesStatusItem.command = toggleId;
