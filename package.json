@@ -1,0 +1,81 @@
+{
+	"name": "monies",
+	"displayName": "monies",
+	"description": "The ultimate motivation tool. Display how much money you've made today at work, in the status bar.",
+	"version": "0.0.1",
+	"publisher": "dreamsmasher",
+	"engines": {
+		"vscode": "^1.55.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "monies.toggleStatus",
+				"title": "Monies: Toggle visibility of status widget"
+			}
+		],
+		"configuration": {
+			"title": "monies",
+			"properties": {
+				"monies.annualIncome": {
+					"type": ["number", "null"],
+					"default": null,
+					"description": "Annual salary to base calculations off of. Overrides \"monies.hourlyWage\" if set."
+				},
+				"monies.hourlyWage": {
+					"type": "number",
+					"default": 15,
+					"description": "Hourly income to base calculations off of."
+				},
+				"monies.startTime": {
+					"type": "number",
+					"default": 9,
+					"description": "When you start work."
+				},
+				"monies.averageVacationDays": {
+					"type": "number",
+					"default": 0,
+					"description": "Average number of days taken off work (to adjust for in calculations)"
+				},
+				"monies.monetaryUnit": {
+					"type": "string",
+					"default": "$",
+					"description": "Unit to use when formatting live earnings. Accepts common strings like '$' or currency strings like 'euro', 'pound', 'yen', etc."
+				},
+				"monies.showOnLoad": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether to show the monies widget by default. It can be toggled with `Monies: toggle visibility of status widget` or by clicking the widget when it's visible."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.55.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.19.0",
+		"@typescript-eslint/eslint-plugin": "^4.14.1",
+		"@typescript-eslint/parser": "^4.14.1",
+		"glob": "^7.1.6",
+		"mocha": "^8.2.1",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0"
+	}
+}
