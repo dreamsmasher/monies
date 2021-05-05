@@ -4,6 +4,7 @@
 	"description": "The ultimate motivation tool. Display how much money you've made today at work, in the status bar.",
 	"version": "0.0.1",
 	"publisher": "dreamsmasher",
+	"repository": "https://github.com/dreamsmasher/monies",
 	"engines": {
 		"vscode": "^1.55.0"
 	},

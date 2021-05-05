@@ -3,9 +3,9 @@ import * as vscode from 'vscode';
 const userConfig = vscode.workspace.getConfiguration('monies');
 
 const minsPerYear = (60 * 8 * (5 * 52 - userConfig.averageVacationDays)) || 1;
-const hourly: number = (userConfig.annualSalary) 
-    ? userConfig.annualSalary / minsPerYear 
-    : userConfig.hourlyWage / 60;
+const perMinute: number = (userConfig.annualIncome) 
+    ? userConfig.annualIncome / minsPerYear 
+    : userConfig.perMinuteWage / 60;
 
 const formatter = buildCurrencyFormatter(userConfig.monetaryUnit);
 
@@ -53,10 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     function updateCounter(start: number) {
         moniesStatusItem.text = formatter(start);
-        updateId = setTimeout(() => updateCounter(start + hourly), 60000);
+        updateId = setTimeout(() => updateCounter(start + perMinute), 60000);
     }
     let startTime = getTodayNthHour(userConfig.startTime);
-    updateCounter(minsSince(startTime));
+    updateCounter(minsSince(startTime) * perMinute);
 
     let visible = true;
     let toggleFunc = () => {
@@ -71,7 +71,6 @@ export function activate(context: vscode.ExtensionContext) {
     subscriptions.push(vscode.commands.registerCommand(toggleId, toggleFunc));
     moniesStatusItem.command = toggleId;
     subscriptions.push(moniesStatusItem);
-    console.log(subscriptions);
 }
 
 export function deactivate() {
