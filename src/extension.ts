@@ -1,6 +1,3 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import { config } from 'process';
 import * as vscode from 'vscode';
 
 const userConfig = vscode.workspace.getConfiguration('monies');
@@ -13,35 +10,6 @@ const hourly: number = (userConfig.annualSalary)
 const formatter = buildCurrencyFormatter(userConfig.monetaryUnit);
 
 let updateId: NodeJS.Timeout;
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-    let {subscriptions} = context;
-    let moniesStatusItem: vscode.StatusBarItem = vscode.window.createStatusBarItem();
-
-    function updateCounter(start: number) {
-        moniesStatusItem.text = formatter(start);
-        updateId = setTimeout(() => updateCounter(start + hourly), 60000);
-    }
-    let startTime = getTodayNthHour(userConfig.startTime);
-    updateCounter(minsSince(startTime));
-
-    let visible = true;
-    let toggleFunc = () => {
-        visible ? moniesStatusItem.hide() : moniesStatusItem.show();
-        visible = !visible;
-    };
-   
-    userConfig.showOnLoad && moniesStatusItem.show();
-
-    let toggleId = 'monies.toggleStatus';
-
-
-    subscriptions.push(vscode.commands.registerCommand(toggleId, toggleFunc));
-    moniesStatusItem.command = toggleId;
-    subscriptions.push(moniesStatusItem);
-    console.log(subscriptions);
-}
 
 function getTodayNthHour(n: number): Date {
     let cur = new Date();
@@ -52,13 +20,7 @@ function getTodayNthHour(n: number): Date {
 
 function minsSince(time: Date): number {
     let cur = new Date();
-    let [hrs, mins] = [cur.getHours(), cur.getMinutes()];
-    return ((hrs * 60) + mins) - (time.getHours() * 60);
-}
-
-// this method is called when your extension is deactivated
-export function deactivate() {
-    (updateId !== undefined) && clearTimeout(updateId);
+    return ((cur.getHours() * 60) + cur.getMinutes()) - (time.getHours() * 60);
 }
 
 function buildCurrencyFormatter(unit: string): (amt: number) => string {
@@ -83,4 +45,35 @@ function buildCurrencyFormatter(unit: string): (amt: number) => string {
     return (res !== undefined) 
         ? (amt => `${res}${amt.toFixed(2)}`)
         : (amt => `${amt.toFixed(2)}${unit}`);
+}
+
+export function activate(context: vscode.ExtensionContext) {
+    let {subscriptions} = context;
+    let moniesStatusItem: vscode.StatusBarItem = vscode.window.createStatusBarItem();
+
+    function updateCounter(start: number) {
+        moniesStatusItem.text = formatter(start);
+        updateId = setTimeout(() => updateCounter(start + hourly), 60000);
+    }
+    let startTime = getTodayNthHour(userConfig.startTime);
+    updateCounter(minsSince(startTime));
+
+    let visible = true;
+    let toggleFunc = () => {
+        visible ? moniesStatusItem.hide() : moniesStatusItem.show();
+        visible = !visible;
+    };
+   
+    userConfig.showOnLoad && moniesStatusItem.show();
+
+    let toggleId = 'monies.toggleStatus';
+
+    subscriptions.push(vscode.commands.registerCommand(toggleId, toggleFunc));
+    moniesStatusItem.command = toggleId;
+    subscriptions.push(moniesStatusItem);
+    console.log(subscriptions);
+}
+
+export function deactivate() {
+    (updateId !== undefined) && clearTimeout(updateId);
 }
